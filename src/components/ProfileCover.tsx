@@ -61,9 +61,9 @@ export default function ProfileCover({ category }: ProfileCoverProps) {
       
       await api.updateSettings({ [fieldToUpdate]: url });
       await fetchSettings();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert('Lỗi cập nhật ảnh bìa');
+      alert(`Lỗi: ${e.message || 'Lỗi cập nhật ảnh bìa'}`);
     } finally {
       setUploading(false);
     }

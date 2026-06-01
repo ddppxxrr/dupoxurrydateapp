@@ -96,9 +96,9 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
 
       await onSubmit({ title, date, mediaUrls: validUrls, mediaType, author, songTitle, note, musicUrl: finalMusicUrl });
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading file or saving memory:', error);
-      alert('Có lỗi xảy ra khi lưu kỉ niệm hoặc xử lý file. Bạn có thể cần kiểm tra Storage Firebase Rules.');
+      alert(`Lỗi: ${error.message || 'Có lỗi xảy ra khi lưu kỉ niệm'}`);
     } finally {
       setLoading(false);
     }

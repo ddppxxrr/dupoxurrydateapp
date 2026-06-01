@@ -52,9 +52,15 @@ export default function App() {
   const fetchMemories = async () => {
     try {
       const data = await api.getMemories();
-      setMemories(data);
+      if (Array.isArray(data)) {
+        setMemories(data);
+      } else {
+        console.error("API returned non-array:", data);
+        setMemories([]);
+      }
     } catch (e) {
       console.error(e);
+      setMemories([]);
     }
   };
 
@@ -85,25 +91,22 @@ export default function App() {
     songTitle?: string;
     note?: string;
   }) => {
-    try {
-      if (editingMemory && editingMemory.id) {
-        await api.updateMemory(editingMemory.id, data);
-      } else {
-        await api.addMemory({ ...data, userId: 'guest-user' });
-      }
-      setEditingMemory(null);
-      await fetchMemories();
-    } catch (error) {
-      console.error(error);
+    if (editingMemory && editingMemory.id) {
+      await api.updateMemory(editingMemory.id, data);
+    } else {
+      await api.addMemory({ ...data, userId: 'guest-user' });
     }
+    setEditingMemory(null);
+    await fetchMemories();
   };
 
   const handleDeleteMemory = async (id: string) => {
     try {
       await api.deleteMemory(id);
       await fetchMemories();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      alert(`Lỗi: ${error.message}`);
     }
   };
 

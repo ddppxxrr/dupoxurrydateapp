@@ -20,9 +20,15 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
   const fetchPhotos = async () => {
     try {
       const data = await api.getPhotos(category);
-      setPhotos(data);
+      if (Array.isArray(data)) {
+        setPhotos(data);
+      } else {
+        console.error("API returned non-array:", data);
+        setPhotos([]);
+      }
     } catch (e) {
       console.error(e);
+      setPhotos([]);
     } finally {
       setLoading(false);
     }
@@ -64,9 +70,9 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
         });
       }
       await fetchPhotos();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert('Lỗi khi tải ảnh lên. Có thể file quá lớn.');
+      alert(`Lỗi: ${error.message || 'Lỗi khi tải ảnh lên. Có thể file quá lớn.'}`);
     } finally {
       setUploading(false);
       if (fileInputRef.current) {

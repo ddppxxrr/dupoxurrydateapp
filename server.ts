@@ -15,11 +15,13 @@ app.use(express.json({ limit: '50mb' }));
 
 // --- MongoDB Setup ---
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/dupoxurry";
-mongoose.connect(MONGODB_URI).then(() => {
+mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 2000 }).then(() => {
   console.log("Connected to MongoDB");
 }).catch(err => {
-  console.error("MongoDB connection error:", err);
+  console.log("Note: MongoDB failed to connect locally. Please set MONGODB_URI in your environment.");
 });
+
+const isConnected = () => mongoose.connection.readyState === 1;
 
 const memorySchema = new mongoose.Schema({
   title: String,
@@ -55,6 +57,7 @@ const Setting = mongoose.model('Setting', settingSchema);
 
 app.get('/api/memories', async (req, res) => {
   try {
+    if (!isConnected()) return res.json([]);
     const mems = await Memory.find().sort({ date: -1 });
     res.json(mems.map(m => ({ id: m._id.toString(), ...m.toObject(), createdAt: { seconds: Math.floor(new Date(m.createdAt).getTime()/1000) } })));
   } catch (error) {
@@ -64,6 +67,7 @@ app.get('/api/memories', async (req, res) => {
 
 app.post('/api/memories', async (req, res) => {
   try {
+    if (!isConnected()) return res.status(503).json({ error: 'DB not connected' });
     const m = new Memory(req.body);
     await m.save();
     res.json({ id: m._id.toString() });
@@ -74,6 +78,7 @@ app.post('/api/memories', async (req, res) => {
 
 app.put('/api/memories/:id', async (req, res) => {
   try {
+    if (!isConnected()) return res.status(503).json({ error: 'DB not connected' });
     await Memory.findByIdAndUpdate(req.params.id, req.body);
     res.json({ success: true });
   } catch (error) {
@@ -83,6 +88,7 @@ app.put('/api/memories/:id', async (req, res) => {
 
 app.delete('/api/memories/:id', async (req, res) => {
   try {
+    if (!isConnected()) return res.status(503).json({ error: 'DB not connected' });
     await Memory.findByIdAndDelete(req.params.id);
     res.json({ success: true });
   } catch (error) {
@@ -92,6 +98,7 @@ app.delete('/api/memories/:id', async (req, res) => {
 
 app.get('/api/photos', async (req, res) => {
   try {
+    if (!isConnected()) return res.json([]);
     const { category } = req.query;
     const filter = category ? { category } : {};
     const photos = await Photo.find(filter).sort({ createdAt: -1 });
@@ -103,6 +110,7 @@ app.get('/api/photos', async (req, res) => {
 
 app.post('/api/photos', async (req, res) => {
   try {
+    if (!isConnected()) return res.status(503).json({ error: 'DB not connected' });
     const p = new Photo(req.body);
     await p.save();
     res.json({ id: p._id.toString() });
@@ -113,6 +121,7 @@ app.post('/api/photos', async (req, res) => {
 
 app.delete('/api/photos/:id', async (req, res) => {
   try {
+    if (!isConnected()) return res.status(503).json({ error: 'DB not connected' });
     await Photo.findByIdAndDelete(req.params.id);
     res.json({ success: true });
   } catch (error) {
@@ -122,6 +131,7 @@ app.delete('/api/photos/:id', async (req, res) => {
 
 app.get('/api/settings', async (req, res) => {
   try {
+    if (!isConnected()) return res.json({ id: 'global', dupoCover: 'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&q=80&w=1200', xurryCover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1200' });
     let s = await Setting.findOne({ id: 'global' });
     if (!s) {
       s = new Setting({ id: 'global', dupoCover: 'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&q=80&w=1200', xurryCover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1200' });
@@ -135,6 +145,7 @@ app.get('/api/settings', async (req, res) => {
 
 app.put('/api/settings', async (req, res) => {
   try {
+    if (!isConnected()) return res.status(503).json({ error: 'DB not connected' });
     let s = await Setting.findOne({ id: 'global' });
     if (!s) {
       s = new Setting({ id: 'global', ...req.body });

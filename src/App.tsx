@@ -6,21 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Heart, Search, Music, ArrowUpDown, Image as ImageIcon, Edit2, X, LayoutGrid, List, Mars, Venus, Calendar } from 'lucide-react';
-import { 
-  db,
-  collection, 
-  query, 
-  orderBy, 
-  onSnapshot, 
-  addDoc, 
-  updateDoc,
-  deleteDoc, 
-  doc, 
-  serverTimestamp,
-  getDocFromServer
-} from './lib/firebase';
 import { DateMemory, MediaType, OperationType } from './types';
-import { handleFirestoreError } from './lib/error-handler';
 import AtmosphericBackground from './components/Background';
 import { MemoryCard } from './components/MemoryCard';
 import MemoryForm from './components/MemoryForm';
@@ -28,8 +14,8 @@ import MemoryDetail from './components/MemoryDetail';
 import PhotoGrid from './components/PhotoGrid';
 import ProfileCover from './components/ProfileCover';
 import { CalendarView } from './components/CalendarView';
-import { compressImage } from './lib/imageCompressor';
 import { resolveProxyUrl } from './lib/proxyUrl';
+import { api } from './lib/api';
 
 type TabType = 'memories' | 'dupo' | 'xurry';
 
@@ -63,40 +49,28 @@ export default function App() {
     musicUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' // Dummy actual audio for UI testing
   };
 
-  // 1. Connection Test
-  useEffect(() => {
-    async function testConnection() {
-      try {
-        await getDocFromServer(doc(db, 'system', 'connection'));
-      } catch (error) {
-        if(error instanceof Error && error.message.includes('the client is offline')) {
-          console.error("Please check your Firebase configuration.");
-        }
+  const fetchMemories = async () => {
+    try {
+      const data = await api.getMemories();
+      if (Array.isArray(data)) {
+        setMemories(data);
+      } else {
+        console.error("API returned non-array:", data);
+        setMemories([]);
       }
+    } catch (e) {
+      console.error(e);
+      setMemories([]);
     }
-    testConnection();
-    setLoading(false);
-  }, []);
+  };
 
-  // 2. Data Synchronization
+  // 1. Connection Test & Initial Load
   useEffect(() => {
-    const path = 'memories';
-    const q = query(
-      collection(db, path),
-      orderBy('date', 'desc')
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as DateMemory[];
-      setMemories(docs);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, path);
-    });
-
-    return unsubscribe;
+    const initLoad = async () => {
+      await fetchMemories();
+      setLoading(false);
+    };
+    initLoad();
   }, []);
 
   useEffect(() => {
@@ -117,34 +91,25 @@ export default function App() {
     songTitle?: string;
     note?: string;
   }) => {
-    const path = 'memories';
     try {
       if (editingMemory && editingMemory.id) {
-        await updateDoc(doc(db, 'memories', editingMemory.id), {
-          ...data,
-          updatedAt: serverTimestamp(),
-        });
+        await api.updateMemory(editingMemory.id, data);
       } else {
-        await addDoc(collection(db, path), {
-          ...data,
-          userId: 'guest-user',
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
+        await api.addMemory({ ...data, userId: 'guest-user' });
       }
       setEditingMemory(null);
+      await fetchMemories();
     } catch (error) {
-      handleFirestoreError(error, editingMemory ? OperationType.UPDATE : OperationType.CREATE, path);
+      console.error(error);
     }
   };
 
   const handleDeleteMemory = async (id: string) => {
-    const path = `memories/${id}`;
-    
     try {
-      await deleteDoc(doc(db, 'memories', id));
+      await api.deleteMemory(id);
+      await fetchMemories();
     } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, path);
+      console.error(error);
     }
   };
 

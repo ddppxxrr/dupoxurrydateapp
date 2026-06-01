@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { handleFirestoreError } from '../lib/error-handler';
-import { db, doc, onSnapshot, updateDoc, setDoc } from '../lib/firebase';
 import { OperationType, Settings } from '../types';
 import { compressImage } from '../lib/imageCompressor';
 import { resolveProxyUrl } from '../lib/proxyUrl';
 import { Camera, Loader2, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { api } from '../lib/api';
 
 interface ProfileCoverProps {
   category: 'dupo' | 'xurry';
@@ -16,25 +15,26 @@ export default function ProfileCover({ category }: ProfileCoverProps) {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(doc(db, 'settings', 'global'), (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data() as Settings;
-        if (category === 'dupo' && data.dupoCover) {
-          setCoverUrl(data.dupoCover);
-        } else if (category === 'xurry' && data.xurryCover) {
-          setCoverUrl(data.xurryCover);
-        } else {
-          setCoverUrl(null);
-        }
+  const fetchSettings = async () => {
+    try {
+      const data = await api.getSettings();
+      if (category === 'dupo' && data.dupoCover) {
+        setCoverUrl(data.dupoCover);
+      } else if (category === 'xurry' && data.xurryCover) {
+        setCoverUrl(data.xurryCover);
+      } else {
+        setCoverUrl(null);
       }
+    } catch (e) {
+      console.error(e);
+    } finally {
       setLoading(false);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, 'settings/global');
-      setLoading(false);
-    });
+    }
+  };
 
-    return unsubscribe;
+  useEffect(() => {
+    setLoading(true);
+    fetchSettings();
   }, [category]);
 
   const handleCoverChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +45,7 @@ export default function ProfileCover({ category }: ProfileCoverProps) {
       setUploading(true);
       const base64Image = await compressImage(file, 1200); // larger for cover
       
-      const response = await fetch('/api/upload-base64', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/upload-base64`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ base64: base64Image, contentType: file.type })
@@ -59,17 +59,8 @@ export default function ProfileCover({ category }: ProfileCoverProps) {
       
       const fieldToUpdate = category === 'dupo' ? 'dupoCover' : 'xurryCover';
       
-      await updateDoc(doc(db, 'settings', 'global'), {
-        [fieldToUpdate]: url
-      }).catch(async (error) => {
-        if (error.code === 'not-found') {
-          await setDoc(doc(db, 'settings', 'global'), {
-            [fieldToUpdate]: url
-          }, { merge: true });
-        } else {
-          throw error;
-        }
-      });
+      await api.updateSettings({ [fieldToUpdate]: url });
+      await fetchSettings();
     } catch (e) {
       console.error(e);
       alert('Lỗi cập nhật ảnh bìa');

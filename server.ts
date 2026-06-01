@@ -5,13 +5,151 @@ import "dotenv/config";
 import cors from 'cors';
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { createServer as createViteServer } from 'vite';
+import mongoose from 'mongoose';
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
+app.use(express.json({ limit: '50mb' }));
 
-// Set up S3 Client
+// --- MongoDB Setup ---
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/dupoxurry";
+mongoose.connect(MONGODB_URI).then(() => {
+  console.log("Connected to MongoDB");
+}).catch(err => {
+  console.error("MongoDB connection error:", err);
+});
+
+const memorySchema = new mongoose.Schema({
+  title: String,
+  date: String,
+  mediaUrls: [String],
+  mediaType: String,
+  musicUrl: String,
+  author: String,
+  userId: String,
+  songTitle: String,
+  note: String,
+}, { timestamps: true });
+
+const Memory = mongoose.model('Memory', memorySchema);
+
+const photoSchema = new mongoose.Schema({
+  category: String,
+  imageUrl: String,
+  title: String,
+}, { timestamps: true });
+
+const Photo = mongoose.model('Photo', photoSchema);
+
+const settingSchema = new mongoose.Schema({
+  id: { type: String, default: 'global' },
+  dupoCover: String,
+  xurryCover: String,
+}, { timestamps: true });
+
+const Setting = mongoose.model('Setting', settingSchema);
+
+// --- REST Endpoints for Data ---
+
+app.get('/api/memories', async (req, res) => {
+  try {
+    const mems = await Memory.find().sort({ date: -1 });
+    res.json(mems.map(m => ({ id: m._id.toString(), ...m.toObject(), createdAt: { seconds: Math.floor(new Date(m.createdAt).getTime()/1000) } })));
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch' });
+  }
+});
+
+app.post('/api/memories', async (req, res) => {
+  try {
+    const m = new Memory(req.body);
+    await m.save();
+    res.json({ id: m._id.toString() });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create' });
+  }
+});
+
+app.put('/api/memories/:id', async (req, res) => {
+  try {
+    await Memory.findByIdAndUpdate(req.params.id, req.body);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update' });
+  }
+});
+
+app.delete('/api/memories/:id', async (req, res) => {
+  try {
+    await Memory.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete' });
+  }
+});
+
+app.get('/api/photos', async (req, res) => {
+  try {
+    const { category } = req.query;
+    const filter = category ? { category } : {};
+    const photos = await Photo.find(filter).sort({ createdAt: -1 });
+    res.json(photos.map(p => ({ id: p._id.toString(), ...p.toObject(), createdAt: { seconds: Math.floor(new Date(p.createdAt).getTime()/1000) } })));
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch' });
+  }
+});
+
+app.post('/api/photos', async (req, res) => {
+  try {
+    const p = new Photo(req.body);
+    await p.save();
+    res.json({ id: p._id.toString() });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create' });
+  }
+});
+
+app.delete('/api/photos/:id', async (req, res) => {
+  try {
+    await Photo.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete' });
+  }
+});
+
+app.get('/api/settings', async (req, res) => {
+  try {
+    let s = await Setting.findOne({ id: 'global' });
+    if (!s) {
+      s = new Setting({ id: 'global', dupoCover: 'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&q=80&w=1200', xurryCover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1200' });
+      await s.save();
+    }
+    res.json(s.toObject());
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch settings' });
+  }
+});
+
+app.put('/api/settings', async (req, res) => {
+  try {
+    let s = await Setting.findOne({ id: 'global' });
+    if (!s) {
+      s = new Setting({ id: 'global', ...req.body });
+      await s.save();
+    } else {
+      Object.assign(s, req.body);
+      await s.save();
+    }
+    res.json(s.toObject());
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update settings' });
+  }
+});
+
+// --- R2 Storage Setup ---
 const s3Client = new S3Client({
   region: 'auto',
   endpoint: process.env.R2_ENDPOINT || 'https://884cb2a9424172306f5b47d18010f5e0.r2.cloudflarestorage.com',

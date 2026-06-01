@@ -1,5 +1,3 @@
-import { Timestamp } from 'firebase/firestore';
-
 export type MediaType = 'image' | 'video';
 
 export interface DateMemory {
@@ -10,8 +8,8 @@ export interface DateMemory {
   mediaType: MediaType;
   musicUrl?: string;
   userId: string;
-  createdAt: Timestamp;
-  updatedAt?: Timestamp;
+  createdAt: { seconds: number; nanoseconds?: number };
+  updatedAt?: { seconds: number; nanoseconds?: number };
   author: 'duPO' | 'xurry';
   songTitle?: string;
   note?: string;
@@ -22,7 +20,7 @@ export interface PersonalPhoto {
   category: 'dupo' | 'xurry';
   imageUrl: string;
   title?: string;
-  createdAt: Timestamp;
+  createdAt: { seconds: number; nanoseconds?: number };
 }
 
 export interface Settings {

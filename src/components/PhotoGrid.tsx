@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Trash2, Heart, Image as ImageIcon, Loader2 } from 'lucide-react';
-import { db, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc, where } from '../lib/firebase';
 import { PersonalPhoto, OperationType } from '../types';
-import { handleFirestoreError } from '../lib/error-handler';
 import { compressImage } from '../lib/imageCompressor';
 import { resolveProxyUrl } from '../lib/proxyUrl';
+import { api } from '../lib/api';
 
 interface PhotoGridProps {
   category: 'dupo' | 'xurry';
@@ -18,27 +17,26 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
   const [selectedPhoto, setSelectedPhoto] = useState<PersonalPhoto | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const fetchPhotos = async () => {
+    try {
+      const data = await api.getPhotos(category);
+      if (Array.isArray(data)) {
+        setPhotos(data);
+      } else {
+        console.error("API returned non-array:", data);
+        setPhotos([]);
+      }
+    } catch (e) {
+      console.error(e);
+      setPhotos([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const path = 'personal_photos';
-    const q = query(
-      collection(db, path),
-      where('category', '==', category),
-      orderBy('createdAt', 'desc')
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(d => ({
-        id: d.id,
-        ...d.data()
-      })) as PersonalPhoto[];
-      setPhotos(docs);
-      setLoading(false);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, path);
-      setLoading(false);
-    });
-
-    return unsubscribe;
+    setLoading(true);
+    fetchPhotos();
   }, [category]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +51,7 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
         const title = prompt(`Thêm tiêu đề cho ảnh "${file.name}" (có thể bỏ qua):`) || '';
         const base64Image = await compressImage(file, 1000); // 1000px max, a bit larger for personal photos
         
-        const response = await fetch('/api/upload-base64', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/upload-base64`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ base64: base64Image, contentType: file.type })
@@ -65,13 +63,13 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
         
         const { url } = await response.json();
         
-        await addDoc(collection(db, 'personal_photos'), {
+        await api.addPhoto({
           category,
           imageUrl: url,
           title: title.trim(),
-          createdAt: serverTimestamp(),
         });
       }
+      await fetchPhotos();
     } catch (error) {
       console.error(error);
       alert('Lỗi khi tải ảnh lên. Có thể file quá lớn.');
@@ -86,9 +84,10 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
   const handleDelete = async (id: string) => {
     if (!confirm('Bạn có chắc chắn muốn xoá ảnh này?')) return;
     try {
-      await deleteDoc(doc(db, 'personal_photos', id));
+      await api.deletePhoto(id);
+      await fetchPhotos();
     } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, `personal_photos/${id}`);
+      console.error(error);
     }
   };
 

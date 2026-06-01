@@ -20,15 +20,9 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
   const fetchPhotos = async () => {
     try {
       const data = await api.getPhotos(category);
-      if (Array.isArray(data)) {
-        setPhotos(data);
-      } else {
-        console.error("API returned non-array:", data);
-        setPhotos([]);
-      }
+      setPhotos(data);
     } catch (e) {
       console.error(e);
-      setPhotos([]);
     } finally {
       setLoading(false);
     }
@@ -51,7 +45,7 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
         const title = prompt(`Thêm tiêu đề cho ảnh "${file.name}" (có thể bỏ qua):`) || '';
         const base64Image = await compressImage(file, 1000); // 1000px max, a bit larger for personal photos
         
-        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/upload-base64`, {
+        const response = await fetch('/api/upload-base64', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ base64: base64Image, contentType: file.type })

@@ -84,7 +84,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
 
         const formData = new FormData();
         formData.append('file', musicFile);
-        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/upload`, {
+        const response = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
         });
@@ -158,7 +158,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
       );
       
       const uploadedUrls = await Promise.all(base64Images.map(async (base64) => {
-        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/upload-base64`, {
+        const response = await fetch('/api/upload-base64', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ base64 })
@@ -194,7 +194,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
     setUploadProgress(0);
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `${import.meta.env.VITE_API_URL || ''}/api/upload`, true);
+    xhr.open('POST', '/api/upload', true);
 
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {

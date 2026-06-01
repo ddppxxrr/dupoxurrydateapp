@@ -52,15 +52,9 @@ export default function App() {
   const fetchMemories = async () => {
     try {
       const data = await api.getMemories();
-      if (Array.isArray(data)) {
-        setMemories(data);
-      } else {
-        console.error("API returned non-array:", data);
-        setMemories([]);
-      }
+      setMemories(data);
     } catch (e) {
       console.error(e);
-      setMemories([]);
     }
   };
 

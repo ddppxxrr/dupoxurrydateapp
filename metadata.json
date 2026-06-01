@@ -1,0 +1,13 @@
+{
+  "name": "dupoxurrydateapp",
+  "description": "Hello world~",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "Dating Memory Management",
+    "Media Uploads",
+    "Minimalist UI"
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "Memory": {
+      "title": "Date Memory",
+      "description": "A memory of a date including title, date, media URLs, and optional music.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the date."
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "The date of the memory."
+        },
+        "mediaUrls": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of URLs for photos or videos."
+        },
+        "mediaType": {
+          "type": "string",
+          "enum": ["image", "video"],
+          "description": "Primary type of media stored."
+        },
+        "musicUrl": {
+          "type": "string",
+          "description": "Optional URL for the background music."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns this memory."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the record was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the record was last updated."
+        },
+        "author": {
+          "type": "string",
+          "enum": ["duPO", "xurry"],
+          "description": "Who added the memory."
+        },
+        "songTitle": {
+          "type": "string",
+          "description": "Optional title of the song for the memory."
+        },
+        "note": {
+          "type": "string",
+          "description": "Optional note or feeling from the author."
+        }
+      },
+      "required": ["title", "date", "mediaUrls", "mediaType", "userId", "createdAt", "author"]
+    },
+    "PersonalPhoto": {
+      "title": "Personal Photo",
+      "description": "A personal photo of Dupo or Xurry.",
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": ["dupo", "xurry"],
+          "description": "Who the photo is for."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "The base64 encoded image."
+        },
+        "title": {
+          "type": "string",
+          "description": "Optional title for the photo."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the record was created."
+        }
+      },
+      "required": ["category", "imageUrl", "createdAt"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Global settings for the application.",
+      "type": "object",
+      "properties": {
+        "dupoCover": {
+          "type": "string",
+          "description": "Cover URL for Dupo."
+        },
+        "xurryCover": {
+          "type": "string",
+          "description": "Cover URL for Xurry."
+        }
+      }
+    }
+  },
+  "firestore": {
+    "memories": {
+      "schema": "Memory",
+      "description": "Collection of all date memories."
+    },
+    "personal_photos": {
+      "schema": "PersonalPhoto",
+      "description": "Collection of personal photos for Dupo and Xurry."
+    },
+    "settings": {
+      "schema": "Settings",
+      "description": "Global settings for the application, like covers."
+    }
+  }
+}

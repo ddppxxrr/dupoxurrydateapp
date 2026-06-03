@@ -76,7 +76,7 @@ export default function BirthdaySurprise({ onClose }: { onClose: () => void }) {
       ctx.fillStyle = themeAccent;
       ctx.restore();
 
-      angle += 0.05; // Speed of movement
+      angle += 0.01; // Speed of movement
       animationFrameId = requestAnimationFrame(draw);
     };
 

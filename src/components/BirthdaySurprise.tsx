@@ -37,7 +37,7 @@ export default function BirthdaySurprise({ onClose }: { onClose: () => void }) {
       const themeAccent = getComputedStyle(canvas).getPropertyValue('--color-dpxr-accent').trim() || '#ff6b95';
       const themeText = getComputedStyle(canvas).getPropertyValue('--color-dpxr-text').trim() || '#fff0f5';
 
-      ctx.font = "bold 12px 'Inter', sans-serif";
+      ctx.font = "bold 12px 'JetBrains Mono', monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillStyle = themeAccent;
@@ -52,26 +52,31 @@ export default function BirthdaySurprise({ onClose }: { onClose: () => void }) {
         ctx.translate(x, y);
         // Opacity oscillation for twinkling effect
         ctx.globalAlpha = 0.5 + 0.5 * Math.sin(t * 10 + angle * 5);
-        ctx.fillText("I love you", 0, 0);
+        ctx.fillText("I LOVE YOU", 0, 0);
         ctx.restore();
       }
       
       // Center Text
-      ctx.font = `italic ${Math.max(24, getScale() * 3)}px 'Cormorant Garamond', serif`;
+      ctx.font = ` ${Math.max(24, getScale() * 3)}px 'Cormorant Garamond', serif`;
       ctx.fillStyle = themeText;
       ctx.globalAlpha = 1;
       
       // Pulsing effect for center text
-      const pulse = 1 + 0.05 * Math.sin(angle * 2);
+      const pulse = 1 + 0.08 * Math.pow(Math.sin(angle * 3), 2); // Heartbeat pulse
       ctx.save();
       ctx.translate(cx, cy);
       ctx.scale(pulse, pulse);
-      ctx.fillText("H A P P Y   B I R T H D A Y", 0, 0);
-      ctx.font = "16px 'Inter', sans-serif";
+      
+      // Glow effect
+      ctx.shadowColor = themeAccent;
+      ctx.shadowBlur = 15 + 10 * Math.sin(angle * 3);
+      
+      ctx.fillText("I LOVE YOU", 0, 0);
+      ctx.font = "normal 700 16px 'Inter', sans-serif";
       ctx.fillStyle = themeAccent;
       ctx.restore();
 
-      angle += 0.01; // Speed of movement
+      angle += 0.05; // Speed of movement
       animationFrameId = requestAnimationFrame(draw);
     };
 
@@ -91,6 +96,12 @@ export default function BirthdaySurprise({ onClose }: { onClose: () => void }) {
       transition={{ duration: 0.5 }}
       className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center overflow-hidden theme-birthday"
     >
+      <audio 
+        src="https://pub-581ea5ad3e98413e837b0d06ffad333f.r2.dev/angel.mp3"
+        autoPlay
+        loop
+        className="hidden"
+      />
       <canvas ref={canvasRef} className="block w-full h-full" />
       <button 
         onClick={onClose}

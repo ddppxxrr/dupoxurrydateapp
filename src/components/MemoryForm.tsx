@@ -245,19 +245,19 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-full w-full max-w-md bg-bento-bg border-l border-bento-border z-[101] p-8 overflow-y-auto"
+            className="fixed right-0 top-0 h-full w-full max-w-md bg-dpxr-bg border-l border-dpxr-border z-[101] p-8 overflow-y-auto"
             id="memory-form-container"
           >
             <div className="flex items-center justify-between mb-12">
               <div>
-                <h2 className="text-3xl font-serif italic text-bento-text mb-2">
+                <h2 className="text-3xl font-serif italic text-dpxr-text mb-2">
                   {editingMemory ? 'Chỉnh sửa' : 'Kỉ niệm mới'}
                 </h2>
-                <p className="text-xs text-bento-muted tracking-widest uppercase font-bold">Lưu giữ khoảnh khắc</p>
+                <p className="text-xs text-dpxr-muted tracking-widest uppercase font-bold">Lưu giữ khoảnh khắc</p>
               </div>
               <button
                 onClick={onClose}
-                className="p-3 bg-bento-card border border-bento-border rounded-2xl text-bento-muted hover:text-bento-text transition-all shadow-sm"
+                className="p-3 bg-dpxr-card border border-dpxr-border rounded-2xl text-dpxr-muted hover:text-dpxr-text transition-all shadow-sm"
                 id="close-form"
               >
                 <X className="w-6 h-6" />
@@ -266,7 +266,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
 
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-bento-muted font-bold px-1">
+                <label className="text-[10px] uppercase tracking-[0.2em] text-dpxr-muted font-bold px-1">
                   Tiêu đề buổi hẹn
                 </label>
                 <input
@@ -275,12 +275,12 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Dinner at the harbor..."
-                  className="w-full bg-bento-card border border-bento-border rounded-2xl px-5 py-4 text-bento-text focus:outline-none focus:border-bento-accent transition-all placeholder:text-bento-muted shadow-sm"
+                  className="w-full bg-dpxr-card border border-dpxr-border rounded-2xl px-5 py-4 text-dpxr-text focus:outline-none focus:border-dpxr-accent transition-all placeholder:text-dpxr-muted shadow-sm"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-bento-muted font-bold px-1">
+                <label className="text-[10px] uppercase tracking-[0.2em] text-dpxr-muted font-bold px-1">
                   Ngày tháng
                 </label>
                 <div className="relative">
@@ -289,14 +289,14 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full bg-bento-card border border-bento-border rounded-2xl px-5 py-4 text-bento-text focus:outline-none focus:border-bento-accent transition-all shadow-sm"
+                    className="w-full bg-dpxr-card border border-dpxr-border rounded-2xl px-5 py-4 text-dpxr-text focus:outline-none focus:border-dpxr-accent transition-all shadow-sm"
                   />
-                  <CalendarIcon className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-bento-muted pointer-events-none" />
+                  <CalendarIcon className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-dpxr-muted pointer-events-none" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-bento-muted font-bold px-1">
+                <label className="text-[10px] uppercase tracking-[0.2em] text-dpxr-muted font-bold px-1">
                   Loại phương tiện chính
                 </label>
                 <div className="flex gap-2">
@@ -318,8 +318,8 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                       className={cn(
                         "flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border transition-all uppercase text-[10px] tracking-widest font-bold shadow-sm",
                         mediaType === type
-                          ? "bg-bento-accent text-bento-text border-bento-accent"
-                          : "bg-bento-card text-bento-muted border-bento-border hover:border-bento-accent"
+                          ? "bg-dpxr-accent text-dpxr-text border-dpxr-accent"
+                          : "bg-dpxr-card text-dpxr-muted border-dpxr-border hover:border-dpxr-accent"
                       )}
                     >
                       {type === 'image' ? <ImageIcon className="w-3 h-3" /> : <Video className="w-3 h-3" />}
@@ -330,7 +330,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
               </div>
 
               <div className="space-y-3">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-bento-muted font-bold px-1 block">
+                <label className="text-[10px] uppercase tracking-[0.2em] text-dpxr-muted font-bold px-1 block">
                   {mediaType === 'image' ? 'Tải ảnh lên (Khuyến nghị)' : 'Tải video lên'}
                 </label>
                 
@@ -347,7 +347,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                           onDragEnd={handleDragEnd}
                           className={cn(
                             "relative aspect-square rounded-xl overflow-hidden group border cursor-move transition-all duration-200",
-                            draggedIndex === index ? "opacity-50 scale-95 border-bento-accent z-10" : "border-bento-border hover:border-bento-accent/50"
+                            draggedIndex === index ? "opacity-50 scale-95 border-dpxr-accent z-10" : "border-dpxr-border hover:border-dpxr-accent/50"
                           )}
                         >
                           <img src={resolveProxyUrl(url)} alt={`Preview ${index}`} className="w-full h-full object-cover pointer-events-none" />
@@ -363,7 +363,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                       ) : null)}
                     </div>
                     <div className="flex gap-2">
-                      <label className="flex-1 py-4 border-2 border-dashed border-bento-border rounded-2xl text-bento-muted hover:border-bento-accent hover:text-bento-text transition-all text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer bg-bento-card">
+                      <label className="flex-1 py-4 border-2 border-dashed border-dpxr-border rounded-2xl text-dpxr-muted hover:border-dpxr-accent hover:text-dpxr-text transition-all text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer bg-dpxr-card">
                         <Upload className="w-4 h-4" />
                         Tải ảnh từ máy
                         <input 
@@ -378,7 +378,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                         <button
                           type="button"
                           onClick={() => setMediaUrls([])}
-                          className="px-4 py-4 border border-rose-500/30 hover:border-rose-500/60 rounded-2xl text-rose-500 hover:bg-rose-500/10 transition-all text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 bg-bento-card"
+                          className="px-4 py-4 border border-rose-500/30 hover:border-rose-500/60 rounded-2xl text-rose-500 hover:bg-rose-500/10 transition-all text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 bg-dpxr-card"
                           title="Xoá tất cả ảnh"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -400,7 +400,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                           onDragEnd={handleDragEnd}
                           className={cn(
                             "relative aspect-video rounded-xl overflow-hidden group border cursor-move transition-all duration-200",
-                            draggedIndex === index ? "opacity-50 scale-95 border-bento-accent z-10" : "border-bento-border hover:border-bento-accent/50"
+                            draggedIndex === index ? "opacity-50 scale-95 border-dpxr-accent z-10" : "border-dpxr-border hover:border-dpxr-accent/50"
                           )}
                         >
                           <video src={resolveProxyUrl(url)} className="w-full h-full object-cover pointer-events-none" />
@@ -416,12 +416,12 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                       ) : null)}
                     </div>
                     {uploadProgress > 0 && uploadProgress < 100 && (
-                      <div className="w-full bg-bento-card border border-bento-border rounded-full h-2 mb-4 overflow-hidden">
-                        <div className="bg-bento-accent h-2 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
+                      <div className="w-full bg-dpxr-card border border-dpxr-border rounded-full h-2 mb-4 overflow-hidden">
+                        <div className="bg-dpxr-accent h-2 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
                       </div>
                     )}
                     <div className="flex gap-2">
-                      <label className="flex-1 py-4 border-2 border-dashed border-bento-border rounded-2xl text-bento-muted hover:border-bento-accent hover:text-bento-text transition-all text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer bg-bento-card">
+                      <label className="flex-1 py-4 border-2 border-dashed border-dpxr-border rounded-2xl text-dpxr-muted hover:border-dpxr-accent hover:text-dpxr-text transition-all text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer bg-dpxr-card">
                         <Upload className="w-4 h-4" />
                         Tải video từ máy
                         <input 
@@ -435,7 +435,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                         <button
                           type="button"
                           onClick={() => setMediaUrls([])}
-                          className="px-4 py-4 border border-rose-500/30 hover:border-rose-500/60 rounded-2xl text-rose-500 hover:bg-rose-500/10 transition-all text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 bg-bento-card"
+                          className="px-4 py-4 border border-rose-500/30 hover:border-rose-500/60 rounded-2xl text-rose-500 hover:bg-rose-500/10 transition-all text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 bg-dpxr-card"
                           title="Xoá tất cả video"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -448,7 +448,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-bento-muted font-bold px-1">
+                <label className="text-[10px] uppercase tracking-[0.2em] text-dpxr-muted font-bold px-1">
                   Ai là người thêm?
                 </label>
                 <div className="flex gap-2">
@@ -460,8 +460,8 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                       className={cn(
                         "flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border transition-all uppercase text-[10px] tracking-widest font-bold shadow-sm",
                         author === person
-                          ? "bg-bento-accent text-bento-text border-bento-accent"
-                          : "bg-bento-card text-bento-muted border-bento-border hover:border-bento-accent"
+                          ? "bg-dpxr-accent text-dpxr-text border-dpxr-accent"
+                          : "bg-dpxr-card text-dpxr-muted border-dpxr-border hover:border-dpxr-accent"
                       )}
                     >
                       {person}
@@ -471,7 +471,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-bento-muted font-bold px-1">
+                <label className="text-[10px] uppercase tracking-[0.2em] text-dpxr-muted font-bold px-1">
                   Nhạc buổi hẹn (Tên bài hát)
                 </label>
                 <input
@@ -479,12 +479,12 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                   value={songTitle}
                   onChange={(e) => setSongTitle(e.target.value)}
                   placeholder="Ví dụ: Perfect - Ed Sheeran..."
-                  className="w-full bg-bento-card border border-bento-border rounded-2xl px-5 py-4 text-bento-text focus:outline-none focus:border-bento-accent transition-all placeholder:text-bento-muted shadow-sm"
+                  className="w-full bg-dpxr-card border border-dpxr-border rounded-2xl px-5 py-4 text-dpxr-text focus:outline-none focus:border-dpxr-accent transition-all placeholder:text-dpxr-muted shadow-sm"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-bento-muted font-bold px-1">
+                <label className="text-[10px] uppercase tracking-[0.2em] text-dpxr-muted font-bold px-1">
                   Tải tệp âm nhạc (.mp3, .m4a)
                 </label>
                 <div className="space-y-2">
@@ -507,12 +507,12 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                           setMusicFile(file);
                         }
                       }}
-                      className="w-full bg-bento-card border border-bento-border rounded-2xl px-5 py-4 text-bento-text focus:outline-none focus:border-bento-accent transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-bento-accent file:text-bento-bg hover:file:brightness-110 file:cursor-pointer"
+                      className="w-full bg-dpxr-card border border-dpxr-border rounded-2xl px-5 py-4 text-dpxr-text focus:outline-none focus:border-dpxr-accent transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-dpxr-accent file:text-dpxr-bg hover:file:brightness-110 file:cursor-pointer"
                     />
                     {musicUrl && !musicFile && (
-                      <div className="mt-2 flex items-center gap-2 px-4 py-2 bg-bento-accent/5 border border-bento-accent/10 rounded-xl">
-                        <div className="w-2 h-2 rounded-full bg-bento-accent animate-pulse" />
-                        <span className="text-[10px] text-bento-accent font-bold uppercase tracking-widest">Đã có file nhạc cũ</span>
+                      <div className="mt-2 flex items-center gap-2 px-4 py-2 bg-dpxr-accent/5 border border-dpxr-accent/10 rounded-xl">
+                        <div className="w-2 h-2 rounded-full bg-dpxr-accent animate-pulse" />
+                        <span className="text-[10px] text-dpxr-accent font-bold uppercase tracking-widest">Đã có file nhạc cũ</span>
                       </div>
                     )}
                   </div>
@@ -520,7 +520,7 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-[0.2em] text-bento-muted font-bold px-1">
+                <label className="text-[10px] uppercase tracking-[0.2em] text-dpxr-muted font-bold px-1">
                   Lời muốn nói (Ghi chú/Cảm nhận)
                 </label>
                 <textarea
@@ -528,14 +528,14 @@ export default function MemoryForm({ isOpen, onClose, onSubmit, editingMemory }:
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Nhập cảm nhận của bạn về buổi hẹn này..."
                   rows={3}
-                  className="w-full bg-bento-card border border-bento-border rounded-2xl px-5 py-4 text-bento-text focus:outline-none focus:border-bento-accent transition-all placeholder:text-bento-muted shadow-sm resize-none"
+                  className="w-full bg-dpxr-card border border-dpxr-border rounded-2xl px-5 py-4 text-dpxr-text focus:outline-none focus:border-dpxr-accent transition-all placeholder:text-dpxr-muted shadow-sm resize-none"
                 />
               </div>
 
               <button
                 disabled={loading}
                 type="submit"
-                className="w-full bg-bento-accent text-bento-bg font-bold py-5 rounded-2xl flex items-center justify-center gap-3 hover:brightness-110 transition-all active:scale-[0.98] disabled:opacity-50 shadow-xl"
+                className="w-full bg-dpxr-accent text-dpxr-bg font-bold py-5 rounded-2xl flex items-center justify-center gap-3 hover:brightness-110 transition-all active:scale-[0.98] disabled:opacity-50 shadow-xl"
                 id="submit-memory"
               >
                 {loading ? (

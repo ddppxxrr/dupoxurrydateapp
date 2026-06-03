@@ -94,7 +94,7 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h3 className="text-2xl font-serif italic text-bento-text">
+        <h3 className="text-2xl font-serif italic text-dpxr-text">
           {category === 'dupo' ? 'Ảnh của duPO' : 'Ảnh của xurry'}
         </h3>
         
@@ -110,7 +110,7 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="group flex items-center gap-2 text-xs uppercase tracking-widest font-bold bg-bento-card border border-bento-border text-bento-text px-6 py-3 rounded-full hover:bg-bento-accent hover:text-bento-bg transition-all shadow-sm disabled:opacity-50"
+            className="group flex items-center gap-2 text-xs uppercase tracking-widest font-bold bg-dpxr-card border border-dpxr-border text-dpxr-text px-6 py-3 rounded-full hover:bg-dpxr-accent hover:text-dpxr-bg transition-all shadow-sm disabled:opacity-50"
           >
             {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
             Tải ảnh lên
@@ -120,16 +120,16 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
       
       {loading ? (
         <div className="py-20 flex justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-bento-muted" />
+          <Loader2 className="w-8 h-8 animate-spin text-dpxr-muted" />
         </div>
       ) : photos.length === 0 ? (
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="col-span-full py-32 text-center bg-bento-card border border-bento-border rounded-[32px] shadow-sm"
+          className="col-span-full py-32 text-center bg-dpxr-card border border-dpxr-border rounded-[32px] shadow-sm"
         >
-          <Heart className="w-12 h-12 text-bento-accent mx-auto mb-6 opacity-30 fill-current" />
-          <p className="font-serif italic text-3xl text-bento-text opacity-40">Chưa có bức ảnh nào...</p>
+          <Heart className="w-12 h-12 text-dpxr-accent mx-auto mb-6 opacity-30 fill-current" />
+          <p className="font-serif italic text-3xl text-dpxr-text opacity-40">Chưa có bức ảnh nào...</p>
         </motion.div>
       ) : (
         <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6">
@@ -140,7 +140,7 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="break-inside-avoid mb-6 bg-bento-card rounded-2xl overflow-hidden border border-bento-border shadow-sm group relative cursor-pointer"
+                className="break-inside-avoid mb-6 bg-dpxr-card rounded-2xl overflow-hidden border border-dpxr-border shadow-sm group relative cursor-pointer"
                 onClick={() => setSelectedPhoto(photo)}
               >
                 <img 

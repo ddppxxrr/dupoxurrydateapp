@@ -68,16 +68,16 @@ export default function MemoryDetail({ memory, onClose }: MemoryDetailProps) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           onClick={(e) => e.stopPropagation()}
-          className="bg-bento-card w-full max-w-5xl rounded-[40px] overflow-hidden shadow-2xl border border-white/10 my-auto"
+          className="bg-dpxr-card w-full max-w-5xl rounded-[40px] overflow-hidden shadow-2xl border border-white/10 my-auto"
         >
-          <div className="p-8 md:p-12 border-b border-bento-border">
+          <div className="p-8 md:p-12 border-b border-dpxr-border">
              <div className="flex flex-col gap-4">
                <div>
-                  <h2 className="text-4xl md:text-5xl font-serif italic text-bento-text mb-6">
+                  <h2 className="text-4xl md:text-5xl font-serif italic text-dpxr-text mb-6">
                     {memory.title}
                   </h2>
                   <div className="flex flex-wrap gap-3">
-                    <span className="bg-bento-bg px-4 py-2 rounded-full text-xs font-bold text-bento-text uppercase tracking-wider flex items-center gap-2">
+                    <span className="bg-dpxr-bg px-4 py-2 rounded-full text-xs font-bold text-dpxr-text uppercase tracking-wider flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
                       {format(new Date(memory.date), 'MMMM dd, yyyy')}
                     </span>
@@ -86,26 +86,26 @@ export default function MemoryDetail({ memory, onClose }: MemoryDetailProps) {
                       {memory.author || 'xurry'}
                     </span>
                     {memory.musicUrl && (
-                      <div className="flex items-center gap-3 bg-bento-bg px-5 py-2.5 rounded-full border border-bento-border/50 shadow-sm overflow-hidden group">
-                        <div className={`${isPlaying ? 'animate-spin-slow text-bento-accent' : 'text-bento-text'} transition-colors duration-500`}>
+                      <div className="flex items-center gap-3 bg-dpxr-bg px-5 py-2.5 rounded-full border border-dpxr-border/50 shadow-sm overflow-hidden group">
+                        <div className={`${isPlaying ? 'animate-spin-slow text-dpxr-accent' : 'text-dpxr-text'} transition-colors duration-500`}>
                           <Disc className="w-5 h-5" />
                         </div>
                         
                         <div className="w-[140px] md:w-[200px] overflow-hidden flex items-center relative">
                           <div className={`flex whitespace-nowrap w-max animate-scroll-text ${isPlaying ? '[animation-play-state:running]' : '[animation-play-state:paused]'}`}>
-                            <span className={`${isPlaying ? 'text-bento-accent' : 'text-bento-text'} shrink-0 text-sm sm:text-base font-serif italic pr-8 leading-tight transition-colors duration-300 inline-block`}>
+                            <span className={`${isPlaying ? 'text-dpxr-accent' : 'text-dpxr-text'} shrink-0 text-sm sm:text-base font-serif italic pr-8 leading-tight transition-colors duration-300 inline-block`}>
                               {memory.songTitle || 'Bản nhạc kỷ niệm'}
                             </span>
-                            <span aria-hidden="true" className={`${isPlaying ? 'text-bento-accent' : 'text-bento-text'} shrink-0 text-sm sm:text-base font-serif italic pr-8 leading-tight transition-colors duration-300 inline-block`}>
+                            <span aria-hidden="true" className={`${isPlaying ? 'text-dpxr-accent' : 'text-dpxr-text'} shrink-0 text-sm sm:text-base font-serif italic pr-8 leading-tight transition-colors duration-300 inline-block`}>
                               {memory.songTitle || 'Bản nhạc kỷ niệm'}
                             </span>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-1 ml-2 border-l border-bento-border pl-2">
+                        <div className="flex items-center gap-1 ml-2 border-l border-dpxr-border pl-2">
                           <button
                             onClick={togglePlay}
-                            className={`p-1.5 rounded-full transition-all hover:bg-white/5 ${isPlaying ? 'text-bento-accent' : 'text-bento-text'}`}
+                            className={`p-1.5 rounded-full transition-all hover:bg-white/5 ${isPlaying ? 'text-dpxr-accent' : 'text-dpxr-text'}`}
                             title={isPlaying ? "Tạm dừng" : "Phát nhạc"}
                           >
                             {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current" />}
@@ -130,8 +130,8 @@ export default function MemoryDetail({ memory, onClose }: MemoryDetailProps) {
              </div>
           </div>
 
-          <div className="p-8 md:p-12 bg-bento-bg">
-            <h3 className="text-xs uppercase tracking-widest text-bento-muted font-bold mb-8">Khoảnh khắc</h3>
+          <div className="p-8 md:p-12 bg-dpxr-bg">
+            <h3 className="text-xs uppercase tracking-widest text-dpxr-muted font-bold mb-8">Khoảnh khắc</h3>
             
             {(() => {
               const totalItems = (memory.mediaType === 'video' ? 1 : (memory.mediaUrls?.length || 0)) + (memory.note ? 1 : 0);
@@ -164,7 +164,7 @@ export default function MemoryDetail({ memory, onClose }: MemoryDetailProps) {
                      <motion.div 
                        initial={{ opacity: 0, scale: 0.9 }}
                        animate={{ opacity: 1, scale: 1 }}
-                       className="p-8 md:p-10 rounded-3xl relative overflow-hidden shadow-sm border-t-[6px] flex flex-col bg-bento-accent border-black/10 break-inside-avoid w-full mb-6"
+                       className="p-8 md:p-10 rounded-3xl relative overflow-hidden shadow-sm border-t-[6px] flex flex-col bg-dpxr-accent border-black/10 break-inside-avoid w-full mb-6"
                      >
                        <div className="relative z-10 flex flex-col h-full">
                          <div className="flex items-center justify-between mb-6">

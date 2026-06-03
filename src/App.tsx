@@ -14,6 +14,7 @@ import MemoryDetail from './components/MemoryDetail';
 import PhotoGrid from './components/PhotoGrid';
 import ProfileCover from './components/ProfileCover';
 import { CalendarView } from './components/CalendarView';
+import BirthdaySurprise from './components/BirthdaySurprise';
 import { resolveProxyUrl } from './lib/proxyUrl';
 import { api } from './lib/api';
 
@@ -30,6 +31,8 @@ export default function App() {
   const [viewMode, setViewMode] = useState<'full' | 'compact' | 'calendar'>('full');
   const [activeTab, setActiveTab] = useState<TabType>('memories');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isBirthdayMode, setIsBirthdayMode] = useState(false);
+  const [showSurprise, setShowSurprise] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [passwordModal, setPasswordModal] = useState<{isOpen: boolean, action: () => void, title: string} | null>(null);
   const [passwordInput, setPasswordInput] = useState('');
@@ -71,6 +74,20 @@ export default function App() {
       setLoading(false);
     };
     initLoad();
+  }, []);
+
+  useEffect(() => {
+    const checkBirthdayDisplay = () => {
+      const today = new Date();
+      const month = today.getMonth() + 1; // getMonth is 0-indexed
+      const date = today.getDate();
+      
+      if (month === 6 && (date === 24 || date === 25)) {
+        setIsBirthdayMode(true);
+      }
+    };
+    
+    checkBirthdayDisplay();
   }, []);
 
   useEffect(() => {
@@ -134,8 +151,11 @@ export default function App() {
 
   const submitPassword = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (passwordInput === 'MakiYuta69') {
+    if (passwordInput === 'MakiYuta69' || passwordInput === 'sinhnhat246') {
       setIsAdmin(true);
+      if (passwordInput === 'sinhnhat246') {
+        setIsBirthdayMode(true);
+      }
       if (passwordModal?.action) passwordModal.action();
       setPasswordModal(null);
     } else {
@@ -167,38 +187,38 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen text-bento-text selection:bg-bento-accent selection:text-bento-text">
+    <div className={`min-h-screen text-dpxr-text selection:bg-dpxr-accent selection:text-dpxr-text ${isBirthdayMode ? 'theme-birthday' : ''}`}>
       <AtmosphericBackground />
       
       {/* Navigation */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
         scrolled 
           ? 'py-3 sm:py-4 bg-black/40 backdrop-blur-xl border-b border-white/5 shadow-2xl' 
-          : 'py-4 sm:py-8 bg-bento-bg/80 backdrop-blur-md sm:bg-transparent sm:backdrop-blur-none border-b border-bento-border/50 sm:border-none'
+          : 'py-4 sm:py-8 bg-dpxr-bg/80 backdrop-blur-md sm:bg-transparent sm:backdrop-blur-none border-b border-dpxr-border/50 sm:border-none'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-bento-card rounded-2xl flex items-center justify-center shadow-sm border border-bento-border text-bento-accent">
+            <div className="w-10 h-10 bg-dpxr-card rounded-2xl flex items-center justify-center shadow-sm border border-dpxr-border text-dpxr-accent">
               <Heart className="w-6 h-6 fill-current" />
             </div>
-            <span className="text-xl font-serif italic tracking-tight text-bento-text">duPO xurry</span>
+            <span className="text-xl font-serif italic tracking-tight text-dpxr-text">{isBirthdayMode ? 'HPBD xurry' : 'duPO xurry'}</span>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <div className="flex items-center bg-bento-card border border-bento-border rounded-full px-2 sm:px-4 py-1 sm:py-2 group focus-within:border-bento-muted/30 transition-all shadow-sm">
-              <Search className="w-3 h-3 sm:w-4 sm:h-4 text-bento-muted" />
+            <div className="flex items-center bg-dpxr-card border border-dpxr-border rounded-full px-2 sm:px-4 py-1 sm:py-2 group focus-within:border-dpxr-muted/30 transition-all shadow-sm">
+              <Search className="w-3 h-3 sm:w-4 sm:h-4 text-dpxr-muted" />
               <input 
                 type="text" 
                 placeholder="Tìm kiếm..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-transparent border-none focus:outline-none text-xs sm:text-sm px-2 w-24 sm:w-48 text-bento-text placeholder:text-bento-muted"
+                className="bg-transparent border-none focus:outline-none text-xs sm:text-sm px-2 w-24 sm:w-48 text-dpxr-text placeholder:text-dpxr-muted"
               />
             </div>
 
             <button 
               onClick={() => handleAuth(openNewForm, 'Thêm kỉ niệm mới')}
-              className="group flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-bento-accent text-bento-bg px-3 sm:px-6 py-2 sm:py-3 rounded-full hover:brightness-110 transition-all shadow-sm"
+              className="group flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-dpxr-accent text-dpxr-bg px-3 sm:px-6 py-2 sm:py-3 rounded-full hover:brightness-110 transition-all shadow-sm"
               id="add-memory-nav"
             >
               <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -208,11 +228,12 @@ export default function App() {
               onClick={() => {
                 if (isAdmin) {
                   setIsAdmin(false);
+                  setIsBirthdayMode(false);
                 } else {
                   handleAuth(() => setIsAdmin(true), 'Kích hoạt Edit Mode');
                 }
               }}
-              className={`group flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold px-3 py-2 sm:py-3 rounded-full transition-all shadow-sm border ${isAdmin ? 'bg-rose-500 text-white border-rose-500' : 'bg-transparent text-bento-muted border-bento-border hover:text-bento-text'}`}
+              className={`group flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold px-3 py-2 sm:py-3 rounded-full transition-all shadow-sm border ${isAdmin ? 'bg-rose-500 text-white border-rose-500' : 'bg-transparent text-dpxr-muted border-dpxr-border hover:text-dpxr-text'}`}
             >
               <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">{isAdmin ? 'Tắt Edit' : 'Edit'}</span>
@@ -228,20 +249,22 @@ export default function App() {
             <motion.p 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="text-[10px] sm:text-xs tracking-[0.4em] uppercase text-bento-muted font-bold mb-3"
+              className="text-[10px] sm:text-xs tracking-[0.4em] uppercase text-dpxr-muted font-bold mb-3"
             >
-              bro to lover
+              {isBirthdayMode ? 'TO THE PRETTIEST' : 'bro to lover'}
             </motion.p>
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, type: "spring", stiffness: 100 }}
-              className="text-5xl sm:text-6xl md:text-7xl font-serif italic text-bento-text leading-tight"
+              className="text-5xl sm:text-6xl md:text-7xl font-serif italic text-dpxr-text leading-tight"
             >
-              Dating <br className="hidden md:block" />
-              <span className="text-bento-muted">Saved</span>
+              {isBirthdayMode ? 'Happy ' : 'Dating '} <br className="hidden md:block" />
+              <span className="text-dpxr-muted">{isBirthdayMode ? 'Birthday' : 'Saved'}</span>
             </motion.h2>
           </div>
+
+      
           
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -249,15 +272,15 @@ export default function App() {
             transition={{ delay: 0.3 }}
             className="flex flex-col items-center md:items-end mt-4 md:mt-0"
           >
-            <div className="text-4xl sm:text-5xl font-light text-bento-accent">{memories.length} Kỉ Niệm</div>
-            <div className="text-[10px] uppercase tracking-widest text-bento-muted font-bold mt-2">
+            <div className="text-4xl sm:text-5xl font-light text-dpxr-accent">{memories.length} Kỉ Niệm</div>
+            <div className="text-[10px] uppercase tracking-widest text-dpxr-muted font-bold mt-2">
               lộn số rầu
             </div>
             {memories.length > 0 && activeTab === 'memories' && (
               <div className="mt-6 flex flex-col sm:flex-row items-center gap-2">
                 <button
                   onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-bento-card text-bento-accent border border-bento-border px-4 py-2 rounded-full hover:bg-bento-border transition-colors cursor-pointer"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-dpxr-card text-dpxr-accent border border-dpxr-border px-4 py-2 rounded-full hover:bg-dpxr-border transition-colors cursor-pointer"
                 >
                   <ArrowUpDown className="w-3 h-3" />
                   Sắp xếp: {sortOrder === 'desc' ? 'Mới nhất' : 'Cũ nhất'}
@@ -268,7 +291,7 @@ export default function App() {
                     if (prev === 'compact') return 'calendar';
                     return 'full';
                   })}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-bento-card text-bento-accent border border-bento-border px-4 py-2 rounded-full hover:bg-bento-border transition-colors cursor-pointer"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-dpxr-card text-dpxr-accent border border-dpxr-border px-4 py-2 rounded-full hover:bg-dpxr-border transition-colors cursor-pointer"
                 >
                   {viewMode === 'full' && <List className="w-3 h-3" />}
                   {viewMode === 'compact' && <Calendar className="w-3 h-3" />}
@@ -282,7 +305,7 @@ export default function App() {
             )}
           </motion.div>
         </header>
-
+       
         {/* Tab Navigation */}
         <div className="flex flex-row w-full justify-between sm:justify-start gap-2 sm:gap-4 mb-8 sm:mb-12" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
           {(['memories', 'dupo', 'xurry'] as TabType[]).map((tab) => (
@@ -298,8 +321,8 @@ export default function App() {
               className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-6 py-2.5 sm:py-3 rounded-2xl sm:rounded-full text-[9px] sm:text-xs font-bold tracking-widest transition-all whitespace-nowrap border
                 ${tab === 'memories' ? 'uppercase' : ''}
                 ${activeTab === tab 
-                  ? 'bg-bento-accent text-bento-bg border-bento-accent' 
-                  : 'bg-bento-card text-bento-muted border-bento-border hover:border-bento-accent/50 hover:text-bento-text'
+                  ? 'bg-dpxr-accent text-dpxr-bg border-dpxr-accent' 
+                  : 'bg-dpxr-card text-dpxr-muted border-dpxr-border hover:border-dpxr-accent/50 hover:text-dpxr-text'
                 }
               `}
             >
@@ -309,6 +332,17 @@ export default function App() {
               <span className="truncate">{tab === 'memories' ? 'Kỉ niệm chung' : tab === 'dupo' ? 'duPO' : 'xurry'}</span>
             </button>
           ))}
+           {isBirthdayMode && (
+            <motion.button 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+              onClick={() => setShowSurprise(true)}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-6 py-2.5 sm:py-3 rounded-2xl sm:rounded-full text-[9px] sm:text-xs font-bold tracking-widest whitespace-nowrap border border-dpxr-accent text-dpxr-accent rounded-full shadow-[0_0_20px_rgba(255,107,149,0.4)] hover:scale-110 transition-all z-10"
+            >
+              ❓💌❓
+            </motion.button>
+          )}
         </div>
 
         {/* Main Content Area */}
@@ -323,28 +357,28 @@ export default function App() {
           {/* Welcome Card (Static Content for Bento Style) */}
           <motion.div 
             layout
-            className={`${viewMode === 'full' ? 'sm:col-span-2' : 'md:col-span-2'} row-span-1 bg-bento-accent rounded-[32px] p-6 sm:p-8 flex flex-col justify-between border border-bento-accent relative overflow-hidden`}
+            className={`${viewMode === 'full' ? 'sm:col-span-2' : 'md:col-span-2'} row-span-1 bg-dpxr-accent rounded-[32px] p-6 sm:p-8 flex flex-col justify-between border border-dpxr-accent relative overflow-hidden`}
           >
              <div className="relative z-10">
-               <div className="text-[10px] uppercase tracking-widest font-bold text-bento-bg/50 mb-2">có lẽ anh không muốn đợi... anh muốn bên em</div>
-               <h3 className="text-2xl sm:text-3xl font-serif text-bento-bg italic">Duy Anh và Xuân Nhi</h3>
-               <p className="text-xs sm:text-sm text-bento-bg/80 mt-2 max-w-sm">từ giờ có anh rồi, những điều em thích làm nhớ để anh có mặt ở đấy cùng nhá</p>
+               <div className="text-[10px] uppercase tracking-widest font-bold text-dpxr-bg/50 mb-2">{isBirthdayMode ? 'cái gì tuyệt nhất cho vợ tao hết!!!' : 'có lẽ anh không muốn đợi... anh muốn bên em'}</div>
+               <h3 className="text-2xl sm:text-3xl font-serif text-dpxr-bg italic">{isBirthdayMode ? 'Sinh nhật Xuân Nhiii🎉🎉🎉' : 'Duy Anh và Xuân Nhi'}</h3>
+               <p className="text-xs sm:text-sm text-dpxr-bg/80 mt-2 max-w-sm whitespace-pre-line">{isBirthdayMode ? 'Em mong anh sẽ là người đó...\nCho em tung bay hân hoan trong ánh trăng chưa tàn.' : 'từ giờ có anh rồi, những điều em thích làm nhớ để anh có mặt ở đấy cùng nhá'}</p>
              </div>
              <div className="flex items-center gap-4 mt-8 lg:mt-12 relative z-10">
-                <div className="w-12 h-12 bg-bento-bg rounded-2xl flex-shrink-0 flex items-center justify-center text-bento-accent">
+                <div className="w-12 h-12 bg-dpxr-bg rounded-2xl flex-shrink-0 flex items-center justify-center text-dpxr-accent">
                   <Heart className="w-5 h-5 fill-current" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-sm font-bold text-bento-bg truncate">
+                  <div className="text-sm font-bold text-dpxr-bg truncate">
                     {latestMemoryWithMusic ? latestMemoryWithMusic.title : 'Perfect - Ed Sheeran'}
                   </div>
-                  <div className="text-[10px] text-bento-bg/70 uppercase tracking-widest font-bold truncate">
+                  <div className="text-[10px] text-dpxr-bg/70 uppercase tracking-widest font-bold truncate">
                     {latestMemoryWithMusic ? `Từ kỉ niệm: ${latestMemoryWithMusic.date}` : 'Đang phát từ buổi hẹn đầu tiên'}
                   </div>
                 </div>
              </div>
              {/* Decorative hearts */}
-             <Heart className="absolute -bottom-10 -right-10 w-48 h-48 text-bento-bg/10 rotate-12" />
+             <Heart className="absolute -bottom-10 -right-10 w-48 h-48 text-dpxr-bg/10 rotate-12" />
           </motion.div>
 
           <AnimatePresence mode="popLayout">
@@ -366,7 +400,7 @@ export default function App() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   onClick={() => setViewingMemory(memory)}
-                  className="bg-bento-card border border-bento-border rounded-2xl p-3 flex items-center gap-4 cursor-pointer hover:border-bento-accent/50 group transition-all"
+                  className="bg-dpxr-card border border-dpxr-border rounded-2xl p-3 flex items-center gap-4 cursor-pointer hover:border-dpxr-accent/50 group transition-all"
                 >
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-black/20 rounded-xl overflow-hidden flex-shrink-0 relative">
                     {memory.mediaType === 'video' ? (
@@ -381,14 +415,14 @@ export default function App() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <div className="text-[10px] sm:text-xs text-bento-muted font-bold uppercase tracking-widest">{memory.date}</div>
+                      <div className="text-[10px] sm:text-xs text-dpxr-muted font-bold uppercase tracking-widest">{memory.date}</div>
                       {memory.author === 'duPO' ? (
                         <Mars className="w-3 h-3 text-blue-500" />
                       ) : (
                         <Venus className="w-3 h-3 text-pink-500" />
                       )}
                     </div>
-                    <h3 className="text-sm sm:text-base font-serif italic text-bento-text truncate">{memory.title}</h3>
+                    <h3 className="text-sm sm:text-base font-serif italic text-dpxr-text truncate">{memory.title}</h3>
                   </div>
                   <div className="flex items-center gap-2">
                     {isAdmin && memory.id !== 'test-memory-id' && (
@@ -398,7 +432,7 @@ export default function App() {
                             e.stopPropagation();
                             handleEditMemory(memory);
                           }}
-                          className="p-2 text-bento-muted hover:text-bento-text transition-colors"
+                          className="p-2 text-dpxr-muted hover:text-dpxr-text transition-colors"
                         >
                           <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
@@ -409,7 +443,7 @@ export default function App() {
                               handleDeleteMemory(memory.id);
                             }
                           }}
-                          className="p-2 text-bento-muted hover:text-rose-500 transition-colors"
+                          className="p-2 text-dpxr-muted hover:text-rose-500 transition-colors"
                         >
                           <X className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
@@ -426,13 +460,13 @@ export default function App() {
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="col-span-full py-32 text-center bg-bento-card border border-bento-border rounded-[32px] shadow-sm"
+              className="col-span-full py-32 text-center bg-dpxr-card border border-dpxr-border rounded-[32px] shadow-sm"
             >
-              <Heart className="w-12 h-12 text-bento-accent mx-auto mb-6 opacity-30" />
-              <p className="font-serif italic text-3xl text-bento-text opacity-40">Chưa có kỉ niệm nào được lưu lại...</p>
+              <Heart className="w-12 h-12 text-dpxr-accent mx-auto mb-6 opacity-30" />
+              <p className="font-serif italic text-3xl text-dpxr-text opacity-40">Chưa có kỉ niệm nào được lưu lại...</p>
               <button 
                 onClick={() => handleAuth(openNewForm, 'Thêm kỉ niệm mới')}
-                className="mt-8 text-bento-text/40 hover:text-bento-text text-xs uppercase tracking-[0.3em] font-bold border-b border-bento-text/20 pb-1 pb-1 transition-all"
+                className="mt-8 text-dpxr-text/40 hover:text-dpxr-text text-xs uppercase tracking-[0.3em] font-bold border-b border-dpxr-text/20 pb-1 pb-1 transition-all"
               >
                 Tạo kỉ niệm đầu tiên
               </button>
@@ -489,17 +523,17 @@ export default function App() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-bento-card border border-bento-border p-6 sm:p-8 rounded-[32px] w-full max-w-sm relative shadow-xl"
+              className="bg-dpxr-card border border-dpxr-border p-6 sm:p-8 rounded-[32px] w-full max-w-sm relative shadow-xl"
             >
               <button 
                 onClick={() => setPasswordModal(null)}
-                className="absolute top-6 right-6 text-bento-muted hover:text-bento-text transition-colors"
+                className="absolute top-6 right-6 text-dpxr-muted hover:text-dpxr-text transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
               
-              <h3 className="text-xl font-serif mb-2 text-bento-text">{passwordModal.title}</h3>
-              <p className="text-xs text-bento-muted mb-6">Vui lòng nhập mật khẩu để tiếp tục.</p>
+              <h3 className="text-xl font-serif mb-2 text-dpxr-text">{passwordModal.title}</h3>
+              <p className="text-xs text-dpxr-muted mb-6">Vui lòng nhập mật khẩu để tiếp tục.</p>
               
               <form onSubmit={submitPassword}>
                 <input
@@ -511,7 +545,7 @@ export default function App() {
                   }}
                   autoFocus
                   placeholder="Mật khẩu..."
-                  className="w-full bg-bento-bg border border-bento-border px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-bento-accent transition-colors text-bento-text placeholder:text-bento-muted/50 mb-2"
+                  className="w-full bg-dpxr-bg border border-dpxr-border px-4 py-3 rounded-xl text-sm focus:outline-none focus:border-dpxr-accent transition-colors text-dpxr-text placeholder:text-dpxr-muted/50 mb-2"
                 />
                 
                 {passwordError && (
@@ -520,13 +554,20 @@ export default function App() {
                 
                 <button
                   type="submit"
-                  className="w-full mt-4 bg-bento-accent text-bento-bg py-3 rounded-xl text-xs uppercase tracking-widest font-bold hover:brightness-110 transition-all"
+                  className="w-full mt-4 bg-dpxr-accent text-dpxr-bg py-3 rounded-xl text-xs uppercase tracking-widest font-bold hover:brightness-110 transition-all"
                 >
                   Xác nhận
                 </button>
               </form>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Birthday Surprise Overlay */}
+      <AnimatePresence>
+        {showSurprise && isBirthdayMode && (
+          <BirthdaySurprise onClose={() => setShowSurprise(false)} />
         )}
       </AnimatePresence>
     </div>

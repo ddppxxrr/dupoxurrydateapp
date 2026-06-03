@@ -5,12 +5,12 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Cormorant Garamond", serif;
   
-  --color-bento-bg: #090e10;
-  --color-bento-text: #e2f1eb;
-  --color-bento-muted: #648f86;
-  --color-bento-accent: #11ff9d;
-  --color-bento-border: #142323;
-  --color-bento-card: #0c1415;
+  --color-dpxr-bg: #090e10;
+  --color-dpxr-text: #e2f1eb;
+  --color-dpxr-muted: #648f86;
+  --color-dpxr-accent: #11ff9d;
+  --color-dpxr-border: #142323;
+  --color-dpxr-card: #0c1415;
 
   @keyframes spin-slow {
     from { transform: rotate(0deg); }
@@ -23,4 +23,13 @@
     to { transform: translateX(-50%); }
   }
   --animate-scroll-text: scroll-text 8s linear infinite;
+}
+
+.theme-birthday {
+  --color-dpxr-bg: #1a0a10;
+  --color-dpxr-text: #fff0f5;
+  --color-dpxr-muted: #b38292;
+  --color-dpxr-accent: #ff6b95;
+  --color-dpxr-border: #3a1b26;
+  --color-dpxr-card: #251119;
 }

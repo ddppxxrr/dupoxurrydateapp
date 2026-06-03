@@ -54,30 +54,30 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ memories, onViewMemo
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-bento-card border border-bento-border rounded-[32px] overflow-hidden shadow-sm p-4 sm:p-8"
+      className="bg-dpxr-card border border-dpxr-border rounded-[32px] overflow-hidden shadow-sm p-4 sm:p-8"
     >
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-12 sm:mb-16">
         <div className="flex flex-col">
-          <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tighter text-bento-text leading-none">
+          <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tighter text-dpxr-text leading-none">
             {format(currentMonth, 'MMMM')}
           </h2>
           <div className="flex items-center gap-4 mt-2">
             <button 
               onClick={prevMonth}
-              className="p-2 hover:bg-bento-bg rounded-full transition-colors text-bento-muted hover:text-bento-accent"
+              className="p-2 hover:bg-dpxr-bg rounded-full transition-colors text-dpxr-muted hover:text-dpxr-accent"
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
             <button 
               onClick={nextMonth}
-              className="p-2 hover:bg-bento-bg rounded-full transition-colors text-bento-muted hover:text-bento-accent"
+              className="p-2 hover:bg-dpxr-bg rounded-full transition-colors text-dpxr-muted hover:text-dpxr-accent"
             >
               <ChevronRight className="w-6 h-6" />
             </button>
           </div>
         </div>
-        <div className="text-4xl sm:text-7xl font-black text-bento-text opacity-10">
+        <div className="text-4xl sm:text-7xl font-black text-dpxr-text opacity-10">
           {format(currentMonth, 'yyyy')}
         </div>
       </div>
@@ -86,7 +86,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ memories, onViewMemo
       <div className="grid grid-cols-7 gap-1 sm:gap-2 lg:gap-4">
         {/* Day Headers */}
         {days.map((day) => (
-          <div key={day} className={`text-[10px] sm:text-xs font-black uppercase tracking-widest text-bento-muted text-center py-2 sm:py-4`}>
+          <div key={day} className={`text-[10px] sm:text-xs font-black uppercase tracking-widest text-dpxr-muted text-center py-2 sm:py-4`}>
             <span className="hidden sm:inline">{day}</span>
             <span className="sm:hidden">{day.slice(0, 3)}</span>
           </div>
@@ -105,7 +105,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ memories, onViewMemo
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.01 }}
               className={`min-h-[100px] sm:min-h-[140px] lg:min-h-[180px] rounded-2xl p-3 sm:p-4 relative flex flex-col group transition-all overflow-hidden border
-                ${isCurrentMonth && dayMemories.length === 0 ? 'bg-bento-bg/50 border-bento-border/50' : 'bg-transparent border-transparent'}
+                ${isCurrentMonth && dayMemories.length === 0 ? 'bg-dpxr-bg/50 border-dpxr-border/50' : 'bg-transparent border-transparent'}
                 ${!isCurrentMonth ? 'opacity-20 pointer-events-none' : ''}
                 ${dayMemories.length > 0 ? (dayMemories[0].author === 'duPO' ? 'bg-blue-600 border-blue-500 cursor-pointer hover:border-white shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-pink-600 border-pink-500 cursor-pointer hover:border-white shadow-[0_0_15px_rgba(236,72,153,0.3)]') : ''}
               `}
@@ -122,7 +122,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ memories, onViewMemo
                 </div>
               )}
 
-              <span className={`text-sm sm:text-base font-black relative z-10 ${isCurrentMonth ? (dayMemories.length > 0 ? 'text-white drop-shadow-md' : 'text-bento-muted/50') : 'text-bento-muted/20'}`}>
+              <span className={`text-sm sm:text-base font-black relative z-10 ${isCurrentMonth ? (dayMemories.length > 0 ? 'text-white drop-shadow-md' : 'text-dpxr-muted/50') : 'text-dpxr-muted/20'}`}>
                 {format(day, 'd')}
               </span>
 

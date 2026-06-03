@@ -5,6 +5,7 @@ import { PersonalPhoto, OperationType } from '../types';
 import { compressImage } from '../lib/imageCompressor';
 import { resolveProxyUrl } from '../lib/proxyUrl';
 import { api } from '../lib/api';
+import { SmoothImage } from './SmoothImage';
 
 interface PhotoGridProps {
   category: 'dupo' | 'xurry';
@@ -143,10 +144,11 @@ export default function PhotoGrid({ category }: PhotoGridProps) {
                 className="break-inside-avoid mb-6 bg-dpxr-card rounded-2xl overflow-hidden border border-dpxr-border shadow-sm group relative cursor-pointer"
                 onClick={() => setSelectedPhoto(photo)}
               >
-                <img 
+                <SmoothImage 
                   src={resolveProxyUrl(photo.imageUrl)} 
                   alt={photo.title || 'Personal photo'} 
-                  className="w-full object-cover"
+                  className="w-full h-auto"
+                  wrapperClassName="w-full h-auto min-h-[200px]"
                 />
                 <button
                   onClick={(e) => {

@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  format, 
-  startOfMonth, 
-  endOfMonth, 
-  startOfWeek, 
-  endOfWeek, 
-  eachDayOfInterval, 
-  isSameMonth, 
-  isSameDay, 
-  addMonths, 
-  subMonths 
-} from 'date-fns';
-import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
+import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, subMonths, addMonths } from 'date-fns';
+import { motion } from 'motion/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DateMemory } from '../types';
 import { resolveProxyUrl } from '../lib/proxyUrl';
+import { SmoothImage } from './SmoothImage';
 
 interface CalendarViewProps {
   memories: DateMemory[];
@@ -116,7 +106,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ memories, onViewMemo
                   {dayMemories[0].mediaType === 'video' ? (
                     <video src={resolveProxyUrl(dayMemories[0].mediaUrls?.[0] || (dayMemories[0] as any).mediaUrl)} className="w-full h-full object-cover mix-blend-overlay opacity-60" muted loop playsInline />
                   ) : (
-                    <img src={resolveProxyUrl(dayMemories[0].mediaUrls?.[0] || (dayMemories[0] as any).mediaUrl)} alt={dayMemories[0].title} className="w-full h-full object-cover mix-blend-overlay opacity-60" />
+                    <SmoothImage 
+                      src={resolveProxyUrl(dayMemories[0].mediaUrls?.[0] || (dayMemories[0] as any).mediaUrl)} 
+                      alt={dayMemories[0].title} 
+                      className="opacity-60"
+                      wrapperClassName="w-full h-full position-absolute mix-blend-overlay h-full rounded-none bg-transparent"
+                      skeletonClassName="bg-white/10"
+                    />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
                 </div>

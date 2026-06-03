@@ -4,6 +4,7 @@ import { X, Calendar, Video, Image as ImageIcon, Music, Volume2, VolumeX, Play, 
 import { DateMemory } from '../types';
 import { format } from 'date-fns';
 import { resolveProxyUrl } from '../lib/proxyUrl';
+import { SmoothImage } from './SmoothImage';
 
 interface MemoryDetailProps {
   memory: DateMemory | null;
@@ -149,12 +150,12 @@ export default function MemoryDetail({ memory, onClose }: MemoryDetailProps) {
                      </div>
                    ) : (
                      memory.mediaUrls?.map((url, i) => (
-                       <div key={i} className="break-inside-avoid w-full mb-6">
-                         <img
+                       <div key={i} className="break-inside-avoid w-full mb-6 cursor-pointer transition-transform hover:scale-[1.01] active:scale-[0.99]" onClick={() => setSelectedImage(url)}>
+                         <SmoothImage
                            src={resolveProxyUrl(url)}
                            alt={`${memory.title} - ${i}`}
-                           onClick={() => setSelectedImage(url)}
-                           className="w-full h-auto rounded-3xl cursor-pointer transition-transform hover:scale-[1.01] active:scale-[0.99] shadow-sm"
+                           className="w-full h-auto rounded-3xl"
+                           wrapperClassName="w-full h-auto rounded-3xl shadow-sm bg-transparent border border-white/5"
                          />
                        </div>
                      ))

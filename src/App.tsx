@@ -17,6 +17,7 @@ import { CalendarView } from './components/CalendarView';
 import BirthdaySurprise from './components/BirthdaySurprise';
 import { resolveProxyUrl } from './lib/proxyUrl';
 import { api } from './lib/api';
+import { SmoothImage } from './components/SmoothImage';
 
 type TabType = 'memories' | 'dupo' | 'xurry';
 
@@ -406,10 +407,11 @@ export default function App() {
                     {memory.mediaType === 'video' ? (
                       <video src={resolveProxyUrl(memory.mediaUrls?.[0] || (memory as any).mediaUrl)} className="w-full h-full object-cover" />
                     ) : (
-                      <img 
+                      <SmoothImage 
                         src={resolveProxyUrl(memory.mediaUrls?.[0] || (memory as any).mediaUrl)} 
                         alt={memory.title} 
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                        className="group-hover:scale-110 transition-transform duration-700" 
+                        wrapperClassName="w-full h-full rounded-none"
                       />
                     )}
                   </div>

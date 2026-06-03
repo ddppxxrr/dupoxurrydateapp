@@ -100,10 +100,10 @@ app.delete('/api/memories/:id', async (req, res) => {
 app.get('/api/photos', async (req, res) => {
   try {
     if (!isConnected()) return res.json([]);
-    const { category } = req.query;
+    const category = req.query.category as string | undefined;
     const filter = category ? { category } : {};
-    const photos = await Photo.find(filter).sort({ createdAt: -1 });
-    res.json(photos.map(p => ({ id: p._id.toString(), ...p.toObject(), createdAt: { seconds: Math.floor(new Date(p.createdAt).getTime()/1000) } })));
+    const photos = await Photo.find(filter).sort({ createdAt: -1 }).lean();
+    res.json(photos.map(p => ({ id: p._id.toString(), ...(p as any), createdAt: { seconds: Math.floor(new Date(p.createdAt).getTime()/1000) } })));
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch' });
   }

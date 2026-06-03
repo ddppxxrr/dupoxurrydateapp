@@ -5,6 +5,7 @@ import { DateMemory } from '../types';
 import { format } from 'date-fns';
 import { cn } from '../lib/utils';
 import { resolveProxyUrl } from '../lib/proxyUrl';
+import { SmoothImage } from './SmoothImage';
 
 interface MemoryCardProps {
   memory: DateMemory;
@@ -67,10 +68,11 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({ memory, onDelete, onEdit
             autoPlay
           />
         ) : mediaCount === 1 ? (
-          <img
+          <SmoothImage
             src={resolveProxyUrl(displayUrl)}
             alt={memory.title}
-            className="h-full w-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 min-h-[160px]"
+            className="opacity-90 group-hover:opacity-100 transition-opacity duration-500 min-h-[160px]"
+            wrapperClassName="h-full w-full rounded-none"
           />
         ) : (
           <div className={cn(
@@ -78,12 +80,13 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({ memory, onDelete, onEdit
             mediaCount === 2 ? "grid-cols-2" : "grid-cols-2 grid-rows-2"
           )}>
             {memory.mediaUrls.slice(0, 4).map((url, i) => (
-              <img
+              <SmoothImage
                 key={i}
                 src={resolveProxyUrl(url)}
                 alt={`${memory.title} - ${i}`}
-                className={cn(
-                  "h-full w-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500",
+                className="opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+                wrapperClassName={cn(
+                  "h-full w-full rounded-none",
                   mediaCount === 3 && i === 0 ? "row-span-2" : ""
                 )}
               />

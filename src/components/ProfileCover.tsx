@@ -5,6 +5,7 @@ import { resolveProxyUrl } from '../lib/proxyUrl';
 import { Camera, Loader2, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { api } from '../lib/api';
+import { SmoothImage } from './SmoothImage';
 
 interface ProfileCoverProps {
   category: 'dupo' | 'xurry';
@@ -80,7 +81,12 @@ export default function ProfileCover({ category }: ProfileCoverProps) {
   return (
     <div className="relative group w-full h-48 sm:h-64 rounded-3xl bg-dpxr-card border border-dpxr-border overflow-hidden mb-8 shadow-sm">
       {coverUrl ? (
-        <img src={resolveProxyUrl(coverUrl)} alt={`${category} cover`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        <SmoothImage 
+          src={resolveProxyUrl(coverUrl)} 
+          alt={`${category} cover`} 
+          className="transition-transform duration-700 group-hover:scale-105" 
+          wrapperClassName="w-full h-full rounded-none"
+        />
       ) : (
         <div className="w-full h-full flex flex-col items-center justify-center text-dpxr-muted">
           <ImageIcon className="w-8 h-8 opacity-50 mb-2" />
